@@ -6,165 +6,223 @@
 <title>😈</title>
 
 <style>
-body{
-  margin:0;
-  height:100dvh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-family:system-ui;
-  overflow:hidden;
-  background:black;
-  color:white;
-}
+  :root{
+    --blood:#ff0033;
+    --dark:#000;
+  }
 
-/* 심장박동 배경 */
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:radial-gradient(circle at center, #2b0000 0%, #000 70%);
-  animation: pulse 2s infinite;
-  z-index:0;
-}
+  body{
+    margin:0;
+    height:100dvh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:system-ui, -apple-system, "PingFang TC", "Noto Sans TC", sans-serif;
+    overflow:hidden;
+    background: #000;
+    color:#fff;
+  }
 
-@keyframes pulse{
-  0%{ transform:scale(1); opacity:0.8;}
-  50%{ transform:scale(1.05); opacity:1;}
-  100%{ transform:scale(1); opacity:0.8;}
-}
+  /* 심장박동 배경 */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background: radial-gradient(circle at center, rgba(60,0,0,0.95) 0%, #000 70%);
+    animation: pulse 1.9s ease-in-out infinite;
+    z-index:0;
+  }
+  @keyframes pulse{
+    0%{ transform:scale(1); opacity:0.75; }
+    50%{ transform:scale(1.06); opacity:1; }
+    100%{ transform:scale(1); opacity:0.75; }
+  }
 
-/* 안개 */
-body::after{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:radial-gradient(circle at 30% 40%, rgba(255,0,0,0.2), transparent 60%);
-  animation: fog 6s ease-in-out infinite alternate;
-  pointer-events:none;
-}
+  /* 안개 */
+  body::after{
+    content:"";
+    position:fixed;
+    inset:-20%;
+    background:
+      radial-gradient(circle at 25% 40%, rgba(255,0,40,0.18), transparent 55%),
+      radial-gradient(circle at 70% 65%, rgba(255,0,40,0.12), transparent 60%);
+    filter: blur(18px);
+    animation: fog 7s ease-in-out infinite alternate;
+    pointer-events:none;
+    z-index:1;
+  }
+  @keyframes fog{
+    from{ transform:translate(-40px,-20px) scale(1.02); opacity:.85; }
+    to{ transform:translate(40px,20px) scale(1.06); opacity:1; }
+  }
 
-@keyframes fog{
-  from{ transform:translate(-40px,-20px); }
-  to{ transform:translate(40px,20px); }
-}
+  .card{
+    width:min(420px,92vw);
+    background: rgba(10,0,0,0.88);
+    border: 1px solid rgba(255,0,40,0.18);
+    padding:28px 22px;
+    border-radius:24px;
+    text-align:center;
+    box-shadow: 0 0 55px rgba(255,0,40,0.35);
+    backdrop-filter: blur(8px);
+    position:relative;
+    z-index:3;
+  }
 
-.card{
-  width:min(420px,92vw);
-  background:rgba(10,0,0,0.9);
-  padding:30px;
-  border-radius:24px;
-  text-align:center;
-  box-shadow:0 0 50px rgba(255,0,0,0.4);
-  position:relative;
-  z-index:2;
-}
+  h2{
+    margin:0 0 18px;
+    font-size:22px;
+    letter-spacing: .5px;
+    opacity:0;
+    animation: fadeIn 2.6s ease forwards;
+  }
+  @keyframes fadeIn{ to{ opacity:1; } }
 
-/* 글자 천천히 등장 */
-h2{
-  margin-bottom:30px;
-  font-size:22px;
-  opacity:0;
-  animation: fadeIn 3s forwards;
-}
+  .sub{
+    margin:0 0 18px;
+    font-size:13px;
+    opacity:.55;
+  }
 
-@keyframes fadeIn{
-  to{ opacity:1; }
-}
+  button{
+    padding:14px 34px;
+    font-size:18px;
+    font-weight:900;
+    border:none;
+    border-radius:16px;
+    background: linear-gradient(180deg, #b0001f, #6b0012);
+    color:#fff;
+    cursor:pointer;
+    box-shadow: 0 0 18px rgba(255,0,40,0.65);
+    transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+  }
+  button:active{ transform: scale(.98); }
+  button:hover{
+    transform: scale(1.06);
+    box-shadow: 0 0 32px rgba(255,0,40,1);
+    filter:saturate(1.1);
+  }
+  button:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+    transform:none;
+    box-shadow:none;
+  }
 
-button{
-  padding:15px 35px;
-  font-size:18px;
-  font-weight:800;
-  border:none;
-  border-radius:16px;
-  background:#990000;
-  color:white;
-  cursor:pointer;
-  box-shadow:0 0 20px red;
-  transition:0.3s;
-}
+  .videoWrap{
+    display:none;
+    margin-top:18px;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,.45);
+    border: 1px solid rgba(255,0,40,0.18);
+  }
 
-button:hover{
-  transform:scale(1.1);
-  box-shadow:0 0 40px red;
-}
+  video{
+    display:block;
+    width:100%;
+    background:#000;
+  }
 
-/* 화면 깜빡임 효과 */
-.flash{
-  position:fixed;
-  inset:0;
-  background:black;
-  opacity:0;
-  pointer-events:none;
-  z-index:5;
-}
+  /* 암전 플래시 */
+  .flash{
+    position:fixed;
+    inset:0;
+    background:#000;
+    opacity:0;
+    pointer-events:none;
+    z-index:999;
+    transition: opacity .35s ease;
+  }
 
-.videoWrap{
-  display:none;
-  margin-top:20px;
-}
+  .done{
+    margin-top:16px;
+    font-weight:900;
+    letter-spacing:.5px;
+  }
 </style>
 </head>
 
 <body>
+  <div class="flash" id="flash"></div>
 
-<div class="flash" id="flash"></div>
+  <div class="card">
+    <h2>後面沒有別人對吧？ 😈</h2>
+    <p class="sub">（按下去之後，只能看一次。）</p>
 
-<div class="card">
-  <h2>後面沒有別人對吧？ 😈</h2>
+    <button id="okBtn">OK</button>
 
-  <button id="okBtn">OK</button>
+    <div class="videoWrap" id="videoWrap">
+      <video
+        id="loveVideo"
+        controls
+        controlsList="nodownload noplaybackrate"
+        disablePictureInPicture
+        playsinline
+        preload="metadata"
+      >
+        <source src="video.mp4" type="video/mp4">
+      </video>
+    </div>
 
-  <div class="videoWrap" id="videoWrap">
-    <video 
-      id="loveVideo"
-      width="100%"
-      controls
-      controlsList="nodownload noplaybackrate"
-      disablePictureInPicture
-      playsinline
-    >
-      <source src="video.mp4" type="video/mp4">
-    </video>
+    <div class="done" id="doneMsg" style="display:none;">已經結束了 💋</div>
   </div>
-</div>
 
 <script>
-const okBtn = document.getElementById("okBtn");
-const videoWrap = document.getElementById("videoWrap");
-const loveVideo = document.getElementById("loveVideo");
-const flash = document.getElementById("flash");
+  const okBtn = document.getElementById("okBtn");
+  const videoWrap = document.getElementById("videoWrap");
+  const loveVideo = document.getElementById("loveVideo");
+  const flash = document.getElementById("flash");
+  const doneMsg = document.getElementById("doneMsg");
 
-// 이미 본 경우 차단
-if(localStorage.getItem("watchedVideo") === "true"){
-  okBtn.disabled = true;
-  okBtn.innerText = "已經看過了 😏";
-}
+  // 1회 제한: "재생 시작" 순간 바로 잠금 (새로고침해도 다시 못 봄)
+  const LOCK_KEY = "watchedVideo_v1";
 
-okBtn.addEventListener("click", ()=>{
-  if(localStorage.getItem("watchedVideo") === "true") return;
+  function lockUI(){
+    okBtn.disabled = true;
+    okBtn.textContent = "已經看過了 😏";
+  }
 
-  // 화면 깜빡임 효과
-  flash.style.opacity = "1";
-  setTimeout(()=>{
-    flash.style.opacity = "0";
-    videoWrap.style.display = "block";
-    loveVideo.play();
-  },600);
-});
+  function showDone(){
+    doneMsg.style.display = "block";
+  }
 
-// 영상 끝나면 영구 차단
-loveVideo.addEventListener("ended", ()=>{
-  localStorage.setItem("watchedVideo", "true");
-  videoWrap.innerHTML = "<h3>已經結束了 💋</h3>";
-  okBtn.disabled = true;
-  okBtn.innerText = "已經看過了 😏";
-});
+  // 이미 본 경우 바로 차단 UI
+  if (localStorage.getItem(LOCK_KEY) === "true") {
+    lockUI();
+  }
 
-// 우클릭 방지
-document.addEventListener("contextmenu", e => e.preventDefault());
+  okBtn.addEventListener("click", async () => {
+    if (localStorage.getItem(LOCK_KEY) === "true") return;
+
+    // 🔒 클릭 즉시 잠금 (새로고침/뒤로가기도 재시청 불가)
+    localStorage.setItem(LOCK_KEY, "true");
+    lockUI();
+
+    // 암전 연출
+    flash.style.opacity = "1";
+    setTimeout(async () => {
+      flash.style.opacity = "0";
+
+      videoWrap.style.display = "block";
+
+      try{
+        await loveVideo.play();
+      }catch(e){
+        // 자동재생 정책/오류 시 안내
+        alert("請點一下影片的播放鍵。");
+      }
+    }, 550);
+  });
+
+  // 영상 끝나면 메시지
+  loveVideo.addEventListener("ended", () => {
+    showDone();
+  });
+
+  // 우클릭/길게누르기 방지 (완전 차단은 불가)
+  document.addEventListener("contextmenu", e => e.preventDefault());
+  document.addEventListener("dragstart", e => e.preventDefault());
 </script>
-
 </body>
 </html>
