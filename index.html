@@ -3,111 +3,115 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>발렌타이 고백 💘</title>
-<style>
-  body{
-    margin:0; height:100dvh;
-    display:flex; align-items:center; justify-content:center;
-    font-family:system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-    background:linear-gradient(135deg,#ffd6e0,#fff5d9);
-    overflow:hidden;
-  }
-  canvas#fx{
-    position:fixed; inset:0;
-    pointer-events:none;
-    z-index:1;
-  }
-  .card{
-    width:min(420px,92vw);
-    background:#fff;
-    padding:24px 18px;
-    border-radius:24px;
-    box-shadow:0 15px 40px rgba(0,0,0,.15);
-    text-align:center;
-    position:relative;
-    z-index:2;
-  }
-  h2{ margin:0 0 10px; }
-  .stage{ position:relative; height:220px; margin-top:10px; }
-  button{
-    padding:14px 20px;
-    font-size:18px;
-    font-weight:800;
-    border:none;
-    border-radius:14px;
-    cursor:pointer;
-    touch-action:manipulation;
-  }
-  #yes{ background:#ff4d6d; color:#fff; }
-  #no{
-    position:absolute;
-    background:#e9ecef;
-    color:#333;
-    left:60%;
-    top:60%;
-    transition:left .07s linear, top .07s linear;
-    user-select:none;
-  }
-  #msg{ margin:12px 0 0; font-weight:800; font-size:18px; min-height:1.5em; }
+<title>💘</title>
 
-  /* YES 눌렀을 때 뜨는 사진 영역 */
-  .photoWrap{
-    display:none;
-    margin-top:14px;
-  }
-  .photoWrap.show{ display:block; }
-  .photo{
-    width:100%;
-    max-height:320px;
-    object-fit:cover;
-    border-radius:18px;
-    box-shadow:0 10px 26px rgba(0,0,0,.12);
-  }
-  .cap{
-    margin:10px 0 0;
-    font-weight:800;
-  }
+<style>
+body{
+  margin:0;
+  height:100dvh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:system-ui;
+  background:linear-gradient(135deg,#ffd6e0,#fff5d9);
+  overflow:hidden;
+}
+
+canvas{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:1;
+}
+
+.card{
+  width:min(420px,92vw);
+  background:#fff;
+  padding:25px;
+  border-radius:24px;
+  box-shadow:0 15px 40px rgba(0,0,0,.15);
+  text-align:center;
+  z-index:2;
+  position:relative;
+}
+
+h2{ margin-bottom:15px; }
+
+.stage{
+  position:relative;
+  height:200px;
+}
+
+button{
+  padding:14px 20px;
+  font-size:18px;
+  font-weight:800;
+  border:none;
+  border-radius:14px;
+  cursor:pointer;
+}
+
+.yes{
+  background:#ff4d6d;
+  color:white;
+}
+
+.no{
+  position:absolute;
+  background:#e9ecef;
+  left:60%;
+  top:60%;
+  transition:.07s;
+}
+
+.photoWrap{
+  display:none;
+  margin-top:15px;
+}
+
+.photoWrap.show{
+  display:block;
+}
+
+.photo{
+  width:100%;
+  border-radius:18px;
+}
 </style>
 </head>
 
 <body>
+
 <canvas id="fx"></canvas>
 
 <div class="card">
-  <h2>나랑 발렌타인데이 같이 보낼래? 💝</h2>
+  <h2 id="question">無尾熊會一直愛著怪獸對吧？ 💝</h2>
 
-  <div class="stage" id="stage">
-    <button id="yes">YES</button>
-    <button id="no" aria-label="NO 버튼">NO</button>
+  <div class="stage">
+    <button class="yes" id="yesBtn">YES</button>
+    <button class="no" id="noBtn">NO</button>
   </div>
 
-  <p id="msg"></p>
-
   <div class="photoWrap" id="photoWrap">
-    <!-- ✅ 여기 파일명만 네 사진 파일명으로 맞추면 됨 -->
-    <img class="photo" id="photo" src="photo.jpg" alt="우리 사진" />
-    <div class="cap">💖 약속이야! 💖</div>
+    <img src="photo.jpg" class="photo">
   </div>
 </div>
 
 <script>
-/* ---------- NO 버튼 계속 도망 ---------- */
-const noBtn = document.getElementById("no");
-const yesBtn = document.getElementById("yes");
-const stage = document.getElementById("stage");
-const msg = document.getElementById("msg");
+const question = document.getElementById("question");
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
 const photoWrap = document.getElementById("photoWrap");
+let step = 1;
 
+/* NO 도망 */
 function moveNo(){
+  const stage = document.querySelector(".stage");
   const rect = stage.getBoundingClientRect();
   const btnRect = noBtn.getBoundingClientRect();
 
-  const pad = 6;
-  const maxX = Math.max(pad, rect.width - btnRect.width - pad);
-  const maxY = Math.max(pad, rect.height - btnRect.height - pad);
-
-  const x = Math.random() * (maxX - pad) + pad;
-  const y = Math.random() * (maxY - pad) + pad;
+  const x = Math.random() * (rect.width - btnRect.width);
+  const y = Math.random() * (rect.height - btnRect.height);
 
   noBtn.style.left = x + "px";
   noBtn.style.top  = y + "px";
@@ -118,128 +122,75 @@ function runAway(e){
   const x = e.touches ? e.touches[0].clientX : e.clientX;
   const y = e.touches ? e.touches[0].clientY : e.clientY;
 
-  const cx = b.left + b.width/2;
-  const cy = b.top + b.height/2;
-
-  const d = Math.hypot(x - cx, y - cy);
-  if(d < 95) moveNo();
+  const d = Math.hypot(x - (b.left+b.width/2), y - (b.top+b.height/2));
+  if(d < 90) moveNo();
 }
 
-noBtn.addEventListener("click", (e)=>{ e.preventDefault(); moveNo(); });
-document.addEventListener("touchmove", runAway, {passive:true});
 document.addEventListener("pointermove", runAway);
+document.addEventListener("touchmove", runAway);
 
-window.addEventListener("load", moveNo);
-window.addEventListener("resize", moveNo);
+noBtn.addEventListener("click",(e)=>{
+  e.preventDefault();
+  moveNo();
+});
 
-/* ---------- 하트 폭죽 FX (Canvas) ---------- */
+window.onload = moveNo;
+
+/* YES 클릭 */
+yesBtn.addEventListener("click",()=>{
+  if(step === 1){
+    question.innerText = "要不要跟我親密一下？ 😈";
+    step = 2;
+    moveNo();
+  }else{
+    photoWrap.classList.add("show");
+    burst();
+  }
+});
+
+/* 하트폭죽 */
 const canvas = document.getElementById("fx");
 const ctx = canvas.getContext("2d");
-function resize(){
-  const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
-  canvas.width = Math.floor(innerWidth * dpr);
-  canvas.height = Math.floor(innerHeight * dpr);
-  canvas.style.width = innerWidth + "px";
-  canvas.style.height = innerHeight + "px";
-  ctx.setTransform(dpr,0,0,dpr,0,0);
+canvas.width = innerWidth;
+canvas.height = innerHeight;
+
+const particles=[];
+
+function burst(){
+  for(let i=0;i<80;i++){
+    particles.push({
+      x:innerWidth/2,
+      y:innerHeight/2,
+      vx:(Math.random()-0.5)*6,
+      vy:(Math.random()-0.5)*6,
+      life:80
+    });
+  }
+  animate();
 }
-resize();
-window.addEventListener("resize", resize);
 
-const particles = [];
-let animId = null;
-function rand(min,max){ return Math.random()*(max-min)+min; }
-
-function drawHeart(x,y,size,rot,alpha){
-  ctx.save();
-  ctx.translate(x,y);
-  ctx.rotate(rot);
-  ctx.globalAlpha = alpha;
-
-  const hue = rand(330, 360);
-  ctx.fillStyle = `hsl(${hue} 90% 60%)`;
-
+function drawHeart(x,y){
   ctx.beginPath();
-  const s = size;
-  ctx.moveTo(0, -s*0.25);
-  ctx.bezierCurveTo(s*0.5, -s*0.85, s*1.2, -s*0.1, 0, s*0.9);
-  ctx.bezierCurveTo(-s*1.2, -s*0.1, -s*0.5, -s*0.85, 0, -s*0.25);
-  ctx.closePath();
+  ctx.moveTo(x,y);
+  ctx.bezierCurveTo(x+5,y-5,x+15,y+5,x,y+15);
+  ctx.bezierCurveTo(x-15,y+5,x-5,y-5,x,y);
+  ctx.fillStyle="red";
   ctx.fill();
-  ctx.restore();
-}
-
-function burst(x,y){
-  const count = 95;
-  for(let i=0;i<count;i++){
-    const speed = rand(2.2, 7.4);
-    const angle = rand(0, Math.PI*2);
-    particles.push({
-      x, y,
-      vx: Math.cos(angle)*speed,
-      vy: Math.sin(angle)*speed,
-      g: rand(0.05, 0.12),
-      size: rand(6, 14),
-      rot: rand(0, Math.PI*2),
-      vr: rand(-0.12, 0.12),
-      life: rand(55, 95),
-      age: 0
-    });
-  }
-  for(let i=0;i<12;i++){
-    particles.push({
-      x, y,
-      vx: rand(-0.6, 0.6),
-      vy: rand(-1.8, -0.5),
-      g: 0.06,
-      size: rand(18, 28),
-      rot: rand(0, Math.PI*2),
-      vr: rand(-0.06, 0.06),
-      life: rand(40, 60),
-      age: 0
-    });
-  }
-  if(!animId) animate();
 }
 
 function animate(){
-  animId = requestAnimationFrame(animate);
-  ctx.clearRect(0,0,innerWidth,innerHeight);
-
+  ctx.clearRect(0,0,canvas.width,canvas.height);
   for(let i=particles.length-1;i>=0;i--){
-    const p = particles[i];
-    p.age++;
-    p.vy += p.g;
-    p.x += p.vx;
-    p.y += p.vy;
-    p.rot += p.vr;
-
-    const t = p.age / p.life;
-    const alpha = Math.max(0, 1 - t);
-    drawHeart(p.x, p.y, p.size, p.rot, alpha);
-
-    if(p.age >= p.life) particles.splice(i,1);
+    let p=particles[i];
+    p.x+=p.vx;
+    p.y+=p.vy;
+    p.life--;
+    drawHeart(p.x,p.y);
+    if(p.life<=0) particles.splice(i,1);
   }
-  if(particles.length === 0){
-    cancelAnimationFrame(animId);
-    animId = null;
-    ctx.clearRect(0,0,innerWidth,innerHeight);
-  }
+  if(particles.length>0) requestAnimationFrame(animate);
 }
-
-/* ---------- YES 클릭: 폭죽 + 사진 보여주기 ---------- */
-yesBtn.addEventListener("click", ()=>{
-  msg.textContent = "💖 YES! 💖";
-  photoWrap.classList.add("show");
-
-  const r = yesBtn.getBoundingClientRect();
-  const x = r.left + r.width/2;
-  const y = r.top + r.height/2;
-
-  burst(x,y);
-  setTimeout(()=>burst(innerWidth*0.35, innerHeight*0.35), 130);
-  setTimeout(()=>burst(innerWidth*0.65, innerHeight*0.32), 260);
-});
 </script>
+
 </body>
 </html>
