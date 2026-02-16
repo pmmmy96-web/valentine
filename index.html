@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="ko">
+<html lang="zh-Hant">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>💘</title>
+<title>😈</title>
 
 <style>
 body{
@@ -13,183 +13,112 @@ body{
   align-items:center;
   justify-content:center;
   font-family:system-ui;
-  background:linear-gradient(135deg,#ffd6e0,#fff5d9);
   overflow:hidden;
+  background: radial-gradient(circle at 30% 30%, #3a0000, #000000 70%);
+  color:white;
 }
 
-canvas{
+/* 붉은 안개 애니메이션 */
+body::before{
+  content:"";
   position:fixed;
   inset:0;
+  background: radial-gradient(circle at 70% 60%, rgba(255,0,0,0.25), transparent 60%);
+  animation: moveFog 6s ease-in-out infinite alternate;
   pointer-events:none;
-  z-index:1;
+}
+
+@keyframes moveFog{
+  from{ transform:translate(-30px,-20px); }
+  to{ transform:translate(30px,20px); }
 }
 
 .card{
   width:min(420px,92vw);
-  background:#fff;
-  padding:25px;
+  background:rgba(20,0,0,0.85);
+  padding:28px;
   border-radius:24px;
-  box-shadow:0 15px 40px rgba(0,0,0,.15);
   text-align:center;
-  z-index:2;
-  position:relative;
+  box-shadow:0 0 40px rgba(255,0,0,0.3);
+  backdrop-filter:blur(6px);
 }
 
-h2{ margin-bottom:15px; }
-
-.stage{
-  position:relative;
-  height:200px;
+h2{
+  margin-bottom:25px;
+  font-size:22px;
+  letter-spacing:1px;
 }
 
 button{
-  padding:14px 20px;
+  padding:14px 32px;
   font-size:18px;
   font-weight:800;
   border:none;
-  border-radius:14px;
-  cursor:pointer;
-}
-
-.yes{
-  background:#ff4d6d;
+  border-radius:16px;
+  background:#ff0033;
   color:white;
+  cursor:pointer;
+  box-shadow:0 0 15px rgba(255,0,0,0.7);
+  transition:0.3s;
 }
 
-.no{
-  position:absolute;
-  background:#e9ecef;
-  left:60%;
-  top:60%;
-  transition:.07s;
+button:hover{
+  transform:scale(1.05);
+  box-shadow:0 0 25px rgba(255,0,0,1);
 }
 
-.photoWrap{
+.videoWrap{
   display:none;
-  margin-top:15px;
-}
-
-.photoWrap.show{
-  display:block;
-}
-
-.photo{
-  width:100%;
-  border-radius:18px;
+  margin-top:20px;
 }
 </style>
 </head>
 
 <body>
 
-<canvas id="fx"></canvas>
-
 <div class="card">
-  <h2 id="question">無尾熊會一直愛著怪獸對吧？ 💝</h2>
+  <h2>後面沒有別人對吧？ 😈</h2>
 
-  <div class="stage">
-    <button class="yes" id="yesBtn">YES</button>
-    <button class="no" id="noBtn">NO</button>
-  </div>
+  <button id="okBtn">OK</button>
 
-  <div class="photoWrap" id="photoWrap">
-    <img src="photo.jpg" class="photo">
+  <div class="videoWrap" id="videoWrap">
+    <video 
+      id="loveVideo"
+      width="100%"
+      controls
+      controlsList="nodownload noplaybackrate"
+      disablePictureInPicture
+      playsinline
+    >
+      <source src="video.mp4" type="video/mp4">
+    </video>
   </div>
 </div>
 
 <script>
-const question = document.getElementById("question");
-const yesBtn = document.getElementById("yesBtn");
-const noBtn = document.getElementById("noBtn");
-const photoWrap = document.getElementById("photoWrap");
-let step = 1;
+const okBtn = document.getElementById("okBtn");
+const videoWrap = document.getElementById("videoWrap");
+const loveVideo = document.getElementById("loveVideo");
 
-/* NO 도망 */
-function moveNo(){
-  const stage = document.querySelector(".stage");
-  const rect = stage.getBoundingClientRect();
-  const btnRect = noBtn.getBoundingClientRect();
-
-  const x = Math.random() * (rect.width - btnRect.width);
-  const y = Math.random() * (rect.height - btnRect.height);
-
-  noBtn.style.left = x + "px";
-  noBtn.style.top  = y + "px";
+if(localStorage.getItem("watchedVideo") === "true"){
+  okBtn.disabled = true;
+  okBtn.innerText = "已經看過了 😏";
 }
 
-function runAway(e){
-  const b = noBtn.getBoundingClientRect();
-  const x = e.touches ? e.touches[0].clientX : e.clientX;
-  const y = e.touches ? e.touches[0].clientY : e.clientY;
-
-  const d = Math.hypot(x - (b.left+b.width/2), y - (b.top+b.height/2));
-  if(d < 90) moveNo();
-}
-
-document.addEventListener("pointermove", runAway);
-document.addEventListener("touchmove", runAway);
-
-noBtn.addEventListener("click",(e)=>{
-  e.preventDefault();
-  moveNo();
+okBtn.addEventListener("click", ()=>{
+  if(localStorage.getItem("watchedVideo") === "true") return;
+  videoWrap.style.display = "block";
+  loveVideo.play();
 });
 
-window.onload = moveNo;
-
-/* YES 클릭 */
-yesBtn.addEventListener("click",()=>{
-  if(step === 1){
-    question.innerText = "Do u want sex?! 😈";
-    step = 2;
-    moveNo();
-  }else{
-    photoWrap.classList.add("show");
-    burst();
-  }
+loveVideo.addEventListener("ended", ()=>{
+  localStorage.setItem("watchedVideo", "true");
+  videoWrap.innerHTML = "<h3>已經結束了 💋</h3>";
+  okBtn.disabled = true;
+  okBtn.innerText = "已經看過了 😏";
 });
 
-/* 하트폭죽 */
-const canvas = document.getElementById("fx");
-const ctx = canvas.getContext("2d");
-canvas.width = innerWidth;
-canvas.height = innerHeight;
-
-const particles=[];
-
-function burst(){
-  for(let i=0;i<80;i++){
-    particles.push({
-      x:innerWidth/2,
-      y:innerHeight/2,
-      vx:(Math.random()-0.5)*6,
-      vy:(Math.random()-0.5)*6,
-      life:80
-    });
-  }
-  animate();
-}
-
-function drawHeart(x,y){
-  ctx.beginPath();
-  ctx.moveTo(x,y);
-  ctx.bezierCurveTo(x+5,y-5,x+15,y+5,x,y+15);
-  ctx.bezierCurveTo(x-15,y+5,x-5,y-5,x,y);
-  ctx.fillStyle="red";
-  ctx.fill();
-}
-
-function animate(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  for(let i=particles.length-1;i>=0;i--){
-    let p=particles[i];
-    p.x+=p.vx;
-    p.y+=p.vy;
-    p.life--;
-    drawHeart(p.x,p.y);
-    if(p.life<=0) particles.splice(i,1);
-  }
-  if(particles.length>0) requestAnimationFrame(animate);
-}
+document.addEventListener("contextmenu", e => e.preventDefault());
 </script>
 
 </body>
